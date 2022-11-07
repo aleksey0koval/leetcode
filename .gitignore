@@ -1,0 +1,9 @@
+# IntelliJ IDEA
+.idea/
+.Ds_Store
+*.iml
+
+# Apache Maven
+target/
+!**/src/main/**
+!**/src/test/**
