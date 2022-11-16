@@ -248,3 +248,34 @@ Step 3: "4193 with words" ("4193" is read in; reading stops because the next cha
 The parsed integer is 4193.
 Since 4193 is in the range [-2e31, 2e31 - 1], the final result is 4193.
 ----
+
+== 9. Palindrome Number
+
+Given an integer `x`, return `true` if `x` is a *palindrome*, and `false` otherwise.
+
+Example 1:
+[source,text]
+
+----
+Input: x = 121
+Output: true
+Explanation: 121 reads as 121 from left to right and from right to left.
+----
+
+Example 2:
+[source,text]
+
+----
+Input: x = -121
+Output: false
+Explanation: From left to right, it reads -121. From right to left, it becomes 121-. Therefore it is not a palindrome.
+----
+
+Example 3:
+[source,text]
+
+----
+Input: x = 10
+Output: false
+Explanation: Reads 01 from right to left. Therefore it is not a palindrome.
+----
