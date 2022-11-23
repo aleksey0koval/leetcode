@@ -1,4 +1,6 @@
 = LeetCode
+:toc:
+:toc: left
 
 == 1. Two Sum
 
@@ -31,6 +33,25 @@ Example 3:
 ----
 Input: nums = [3,3], target = 6
 Output: [0,1]
+----
+
+=== Solution
+
+[source,java]
+----
+public class Solution {
+    public int[] twoSum(int[] nums, int target) {
+        Map<Integer, Integer> complements = new HashMap<>();
+        for (int i = 0; i < nums.length; i++) {
+            Integer complementIndex = complements.get(nums[i]);
+            if (complementIndex != null) {
+                return new int[]{complementIndex, i};
+            }
+            complements.put(target - nums[i], i);
+        }
+        return nums;
+    }
+}
 ----
 
 == 2. Add Two Numbers
@@ -66,6 +87,63 @@ Input: l1 = [9,9,9,9,9,9,9], l2 = [9,9,9,9]
 Output: [8,9,9,9,0,0,0,1]
 ----
 
+=== Solution
+
+[source,java]
+----
+public class Solution {
+    public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
+        ListNode root = new ListNode(0);
+        ListNode node = root;
+        int sum = 0;
+        while (l1 != null || l2 != null || sum != 0) {
+            if (l1 != null) {
+                sum = sum + l1.val;
+                l1 = l1.next;
+            }
+            if (l2 != null) {
+                sum = sum + l2.val;
+                l2 = l2.next;
+            }
+            node.next = new ListNode(sum % 10);
+            sum = sum / 10;
+            node = node.next;
+        }
+        return root.next;
+    }
+}
+
+class ListNode {
+    int val;
+    ListNode next;
+
+    ListNode() {
+    }
+
+    ListNode(int val) {
+        this.val = val;
+    }
+
+    ListNode(int val, ListNode next) {
+        this.val = val;
+        this.next = next;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ListNode listNode = (ListNode) o;
+        return val == listNode.val && Objects.equals(next, listNode.next);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(val, next);
+    }
+}
+----
+
 == 3. Longest Substring Without Repeating Characters
 
 Given a string `s`, find the length of the longest substring without repeating characters.
@@ -99,6 +177,27 @@ Explanation: The answer is "wke", with the length of 3.
 
 Notice that the answer must be a substring, "*pwke*" is a subsequence and not a substring.
 
+=== Solution
+
+[source,java]
+----
+public class Solution {
+    public int lengthOfLongestSubstring(String s) {
+        Map<Character, Integer> map = new HashMap<>();
+        int maxLength = 0;
+        int start = 0;
+        for (int end = 0; end < s.length(); end++) {
+            if (map.containsKey(s.charAt(end))) {
+                start = Math.max(start, map.get(s.charAt(end)) + 1);
+            }
+            map.put(s.charAt(end), end);
+            maxLength = Math.max(maxLength, end - start + 1);
+        }
+        return maxLength;
+    }
+}
+----
+
 == 4. Median of Two Sorted Arrays
 
 Given two sorted arrays `nums1` and `nums2` of size `m` and `n` respectively, return the median of the two sorted arrays.
@@ -123,6 +222,23 @@ Output: 2.50000
 Explanation: merged array = [1,2,3,4] and median is (2 + 3) / 2 = 2.5.
 ----
 
+=== Solution
+
+[source,java]
+----
+public class Solution {
+    public double findMedianSortedArrays(int[] nums1, int[] nums2) {
+        int[] result = IntStream.concat(Arrays.stream(nums1), Arrays.stream(nums2))
+                .sorted()
+                .toArray();
+
+        return result.length % 2 == 0
+                ? (result[(result.length / 2)] + result[result.length / 2 - 1]) / 2.0
+                : result[(result.length - 1) / 2];
+    }
+}
+----
+
 == 5. Longest Palindromic Substring
 
 Given a string `s`, return the longest palindromic substring in `s`.
@@ -142,6 +258,36 @@ Example 2:
 ----
 Input: s = "cbbd"
 Output: "bb"
+----
+
+=== Solution
+
+[source,java]
+----
+public class Solution {
+    public String longestPalindrome(String s) {
+        String longest = s.substring(0, 1);
+        for (int i = 0; i < s.length(); i++) {
+            String palindrome = getString(s, i, i);
+            if (palindrome.length() > longest.length()) {
+                longest = palindrome;
+            }
+            palindrome = getString(s, i, i + 1);
+            if (palindrome.length() > longest.length()) {
+                longest = palindrome;
+            }
+        }
+        return longest;
+    }
+
+    private String getString(String s, int left, int right) {
+        while (left >= 0 && right < s.length() && s.charAt(left) == s.charAt(right)) {
+            left--;
+            right++;
+        }
+        return s.substring(left + 1, right);
+    }
+}
 ----
 
 == 7. Reverse Integer
@@ -181,6 +327,29 @@ Example 4:
 ----
 Input: x = 1534236469
 Output: 0
+----
+
+=== Solution
+
+[source,java]
+----
+public class Solution {
+    public int reverse(int x) {
+        int iter = x < 0 ? x * -1 : x;
+        long result = 0;
+
+        while (iter > 0) {
+            result = result * 10 + iter % 10;
+            iter = iter / 10;
+        }
+
+        if (result > Integer.MAX_VALUE) {
+            return 0;
+        }
+
+        return x < 0 ? (int) result * -1 : (int) result;
+    }
+}
 ----
 
 == 8. String to Integer (atoi)
@@ -249,6 +418,38 @@ The parsed integer is 4193.
 Since 4193 is in the range [-2e31, 2e31 - 1], the final result is 4193.
 ----
 
+=== Solution
+
+[source,java]
+----
+public class Solution {
+    public int myAtoi(String s) {
+        if (s == null || s.trim().isEmpty()) {
+            return 0;
+        }
+        int i = 0;
+        int result = 0;
+        int sign = 1;
+        s = s.trim();
+        if (s.charAt(i) == '-') {
+            sign = -1;
+            i++;
+        } else if (s.charAt(i) == '+') {
+            i++;
+        }
+        while (i < s.length() && Character.isDigit(s.charAt(i))) {
+            int d = Integer.parseInt(String.valueOf(s.charAt(i)));
+            if (result > (Integer.MAX_VALUE - d) / 10) {
+                return sign > 0 ? Integer.MAX_VALUE : Integer.MIN_VALUE;
+            }
+            result = result * 10 + d;
+            i++;
+        }
+        return result * sign;
+    }
+}
+----
+
 == 9. Palindrome Number
 
 Given an integer `x`, return `true` if `x` is a *palindrome*, and `false` otherwise.
@@ -280,6 +481,28 @@ Output: false
 Explanation: Reads 01 from right to left. Therefore it is not a palindrome.
 ----
 
+=== Solution
+
+[source,java]
+----
+public class Solution {
+    public boolean isPalindrome(int x) {
+        if (x == 0) {
+            return true;
+        }
+        if (x < 0 || x % 10 == 0) {
+            return false;
+        }
+        int result = 0;
+        while (result < x) {
+            result = result * 10 + x % 10;
+            x = x / 10;
+        }
+        return result == x || result / 10 == x;
+    }
+}
+----
+
 == 11. Container With Most Water
 
 You are given an integer array height of length `n`.
@@ -308,6 +531,34 @@ Example 2:
 ----
 Input: height = [1,1]
 Output: 1
+----
+
+=== Solution
+
+[source,java]
+----
+public class Solution {
+    public int maxArea(int[] height) {
+        int maxArea = 0;
+        int left = 0;
+        int right = height.length - 1;
+        while (left < right) {
+            int leftHeight = height[left];
+            int rightHeight = height[right];
+            int tempArea = (right - left) * min(leftHeight, rightHeight);
+            maxArea = max(maxArea, tempArea);
+            if (leftHeight > rightHeight) {
+                right--;
+            } else if (leftHeight < rightHeight) {
+                left++;
+            } else {
+                left++;
+                right--;
+            }
+        }
+        return maxArea;
+    }
+}
 ----
 
 == 12. Integer to Roman
@@ -370,6 +621,27 @@ Output: "MCMXCIV"
 Explanation: M = 1000, CM = 900, XC = 90 and IV = 4.
 ----
 
+=== Solution
+
+[source,java]
+----
+public class Solution {
+    private final static int[] val = {1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1};
+    private final static String[] rom = {"M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I"};
+
+    public String intToRoman(int num) {
+        StringBuilder result = new StringBuilder();
+        for (int i = 0; num > 0; i++) {
+            while (num >= val[i]) {
+                result.append(rom[i]);
+                num -= val[i];
+            }
+        }
+        return result.toString();
+    }
+}
+----
+
 == 13. Roman to Integer
 
 Roman numerals are represented by seven different symbols: `I`, `V`, `X`, `L`, `C`, `D` and `M`.
@@ -430,6 +702,40 @@ Output: 1994
 Explanation: M = 1000, CM = 900, XC = 90 and IV = 4.
 ----
 
+=== Solution
+
+[source,java]
+----
+public class Solution {
+    private final static Map<Character, Integer> map = new HashMap<>(Map.of(
+            'I', 1,
+            'V', 5,
+            'X', 10,
+            'L', 50,
+            'C', 100,
+            'D', 500,
+            'M', 1000
+    ));
+
+    public int romanToInt(String s) {
+        int result = 0;
+        for (int i = 0; i < s.length(); i++) {
+            if (i != s.length() - 1) {
+                if (map.get(s.charAt(i)) >= map.get(s.charAt(i + 1))) {
+                    result += map.get(s.charAt(i));
+                } else {
+                    result += map.get(s.charAt(i + 1)) - map.get(s.charAt(i));
+                    i++;
+                }
+            } else {
+                result += map.get(s.charAt(i));
+            }
+        }
+        return result;
+    }
+}
+----
+
 == 14. Longest Common Prefix
 
 Write a function to find the longest common prefix string amongst an array of strings.
@@ -451,6 +757,30 @@ Example 2:
 Input: strs = ["dog","racecar","car"]
 Output: ""
 Explanation: There is no common prefix among the input strings.
+----
+
+=== Solution
+
+[source,java]
+----
+public class Solution {
+    public String longestCommonPrefix(String[] strs) {
+        if (strs == null || strs.length == 0) {
+            return "";
+        }
+        Arrays.sort(strs);
+        String first = strs[0];
+        String last = strs[strs.length - 1];
+        int counter = 0;
+        while (counter < first.length()) {
+            if (first.charAt(counter) != last.charAt(counter)) {
+                break;
+            }
+            counter++;
+        }
+        return counter == 0 ? "" : first.substring(0, counter);
+    }
+}
 ----
 
 == 15. 3Sum
@@ -489,4 +819,41 @@ Example 3:
 Input: nums = [0,0,0]
 Output: [[0,0,0]]
 Explanation: The only possible triplet sums up to 0.
+----
+
+=== Solution
+
+[source,java]
+----
+public class Solution {
+    public List<List<Integer>> threeSum(int[] nums) {
+        Arrays.sort(nums);
+        Set<List<Integer>> result = new HashSet<>();
+        for (int i = 0; i < nums.length - 2; i++) {
+            int j = i + 1;
+            int k = nums.length - 1;
+            while (j < k) {
+                int sum = nums[i] + nums[j] + nums[k];
+                if (sum == 0) {
+                    List<Integer> temp = new ArrayList<>(List.of(nums[i], nums[j], nums[k]));
+                    Collections.sort(temp);
+                    result.add(temp);
+                    while (j < k && nums[j] == nums[j + 1]) {
+                        j++;
+                    }
+                    while (j < k && nums[k] == nums[k - 1]) {
+                        k--;
+                    }
+                    j++;
+                    k--;
+                } else if (sum < 0) {
+                    j++;
+                } else {
+                    k--;
+                }
+            }
+        }
+        return new ArrayList<>(result);
+    }
+}
 ----
