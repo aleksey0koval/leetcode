@@ -919,3 +919,80 @@ public class Solution {
     }
 }
 ----
+
+== 17. Letter Combinations of a Phone Number
+
+Given a string containing digits from `2-9` inclusive, return all possible letter combinations that the number could represent.
+Return the answer in any order.
+
+A mapping of digits to letters (just like on the telephone buttons) is given below.
+Note that `1` does not map to any letters.
+
+image::src/main/resources/images/task17.png[]
+
+Example 1:
+[source,text]
+
+----
+Input: digits = "23"
+Output: ["ad","ae","af","bd","be","bf","cd","ce","cf"]
+----
+
+Example 2:
+[source,text]
+
+----
+Input: digits = ""
+Output: []
+----
+
+Example 3:
+[source,text]
+
+----
+Input: digits = "2"
+Output: ["a","b","c"]
+----
+
+=== Solution
+
+[source,java]
+----
+class Solution {
+    Map<Character, String> map = new HashMap<>(
+            Map.of(
+                    '0', "",
+                    '1', "",
+                    '2', "abc",
+                    '3', "def",
+                    '4', "ghi",
+                    '5', "jkl",
+                    '6', "mno",
+                    '7', "pqrs",
+                    '8', "tuv",
+                    '9', "wxyz"
+            )
+    );
+
+    public List<String> letterCombinations(String digits) {
+        if (digits == null || digits.length() == 0) {
+            return List.of();
+        }
+        List<String> result = new ArrayList<>();
+        solve(digits, map, result, 0, "");
+        return result;
+    }
+
+    private static void solve(String digits, Map<Character, String> map, List<String> result, int index, String res) {
+        if (index == digits.length()) {
+            result.add(res);
+            return;
+        }
+        String temp = map.get(digits.charAt(index));
+        for (int i = 0; i < temp.length(); i++) {
+            String newTemp = res + temp.charAt(i);
+            solve(digits, map, result, index + 1, newTemp);
+        }
+    }
+}
+----
