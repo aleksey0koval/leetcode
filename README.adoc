@@ -1158,3 +1158,64 @@ class ListNode {
     }
 }
 ----
+
+== 20. Valid Parentheses
+
+Given a string s containing just the characters `(,` `)`, `{`, `}`, `[` and `]`, determine if the input string is valid.
+
+An input string is valid if:
+
+. Open brackets must be closed by the same type of brackets.
+. Open brackets must be closed in the correct order.
+. Every close bracket has a corresponding open bracket of the same type.
+
+Example 1:
+
+[source,text]
+----
+Input: s = "()"
+Output: true
+----
+
+Example 2:
+
+[source,text]
+----
+Input: s = "()[]{}"
+Output: true
+----
+
+Example 3:
+
+[source,text]
+----
+Input: s = "(]"
+Output: false
+----
+
+=== Solution
+
+[source,java]
+----
+public class Solution {
+    Map<Character, Character> map = Map.of(
+            ')', '(',
+            ']', '[',
+            '}', '{'
+    );
+
+    public boolean isValid(String s) {
+        Stack<Character> stack = new Stack<>();
+        for (int i = 0; i < s.length(); i++) {
+            if (s.charAt(i) == '(' || s.charAt(i) == '[' || s.charAt(i) == '{') {
+                stack.push(s.charAt(i));
+                continue;
+            }
+            if (stack.size() == 0 || map.get(s.charAt(i)) != stack.pop()) {
+                return false;
+            }
+        }
+        return stack.size() == 0;
+    }
+}
+----
