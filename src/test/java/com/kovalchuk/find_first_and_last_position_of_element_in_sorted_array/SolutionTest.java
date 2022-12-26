@@ -23,15 +23,17 @@ class SolutionTest {
         return Stream.of(
                 Arguments.of(new int[]{5, 7, 7, 8, 8, 10}, 8, new int[]{3, 4}),
                 Arguments.of(new int[]{5, 7, 7, 8, 8, 10}, 6, new int[]{-1, -1}),
+                Arguments.of(new int[]{1}, 1, new int[]{0, 0}),
+                Arguments.of(new int[]{2, 2}, 2, new int[]{0, 1}),
                 Arguments.of(new int[]{}, 0, new int[]{-1, -1})
         );
     }
 
-    @ParameterizedTest
-    @MethodSource("testData")
-    void searchRange(int[] nums, int target, int[] expected) {
-        int[] actual = solution.searchRange(nums, target);
+        @ParameterizedTest
+        @MethodSource("testData")
+        void searchRange ( int[] nums, int target, int[] expected){
+            int[] actual = solution.searchRange(nums, target);
 
-        assertArrayEquals(expected, actual);
+            assertArrayEquals(expected, actual);
+        }
     }
-}
